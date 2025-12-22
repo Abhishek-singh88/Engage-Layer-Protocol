@@ -3,36 +3,12 @@
 import { ConnectButton } from './components/ConnectButton';
 import { PermissionRequest } from './components/PermissionRequest';
 import { PostCard } from './components/PostCard';
-
-// Mock data for demo
-const MOCK_POSTS = [
-  {
-    postId: 1,
-    author: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
-    content: 'Welcome to Engage Layer Protocol! 🚀',
-    likeCount: 12,
-  },
-  {
-    postId: 2,
-    author: '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199',
-    content: 'What should we build next on Web3?',
-    likeCount: 8,
-    isPoll: true,
-    pollOptions: [
-      { text: 'DeFi Tools', voteCount: 5 },
-      { text: 'NFT Marketplace', voteCount: 3 },
-      { text: 'DAO Governance', voteCount: 7 },
-    ],
-  },
-  {
-    postId: 3,
-    author: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
-    content: 'Just deployed a new feature using MetaMask Advanced Permissions!',
-    likeCount: 15,
-  },
-];
+import { CreatePostForm } from './components/CreatePostForm';
+import { usePosts } from './hooks/usePosts';
 
 export default function Home() {
+  const { posts, loading } = usePosts();
+
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white shadow-sm p-4 mb-6">
@@ -47,11 +23,34 @@ export default function Home() {
           <PermissionRequest />
         </div>
 
-        <div className="space-y-4">
-          {MOCK_POSTS.map((post) => (
-            <PostCard key={post.postId} {...post} />
-          ))}
-        </div>
+        <CreatePostForm />
+
+        {loading ? (
+          <p className="text-center text-gray-500">Loading posts...</p>
+        ) : posts.length === 0 ? (
+          <p className="text-center text-gray-500">No posts yet. Create the first one!</p>
+        ) : (
+          <div className="space-y-4">
+            {posts.map((post) => (
+              <PostCard
+                key={post.id}
+                postId={post.id}
+                author={post.author}
+                content={post.content}
+                likeCount={Number(post.likeCount)}
+                isPoll={post.isPoll}
+                pollOptions={
+                  post.isPoll
+                    ? post.pollOptions.map((o) => ({
+                        text: o.text,
+                        voteCount: Number(o.voteCount),
+                      }))
+                    : undefined
+                }
+              />
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );
