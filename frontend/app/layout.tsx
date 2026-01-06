@@ -1,9 +1,13 @@
-import { Web3Provider } from './providers/Web3Provider';
-import './globals.css';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Providers } from "./providers";
 
-export const metadata = {
-  title: 'Engage Layer Protocol',
-  description: 'Web3 engagement with Advanced Permissions',
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "EngageLayer - Web3 Social Platform",
+  description: "Decentralized social platform with rewards and permissions",
 };
 
 export default function RootLayout({
@@ -13,8 +17,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <Web3Provider>{children}</Web3Provider>
+      <body className={inter.className}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
